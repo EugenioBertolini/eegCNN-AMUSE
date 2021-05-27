@@ -388,4 +388,43 @@ for subsub = 1:5
         clearvars -except subje versio subsub verver verbose
 
     end
+    
+    load(strcat(path, "GoogleColab\AMUSE_VP", subje(subsub), ".mat"))
+    
+    % TRAIN Y MULTICLASS
+    oddball = bbci_mrk{1, 1}.y(1,:)';
+    sound = bbci_mrk{1, 1}.event.desc;
+    soundPos = bbci_mrk{1, 1}.event.idx_in_block;
+
+    m_Y_sound_train = sound(find(oddball == 1));
+    m_Y_train = soundPos(find(oddball == 1));
+
+    % VAL Y MULTICLASS
+    oddball = bbci_mrk{1, 2}.y(1,:)';
+    sound = bbci_mrk{1, 2}.event.desc;
+    soundPos = bbci_mrk{1, 2}.event.idx_in_block;
+
+    m_Y_sound_val = sound(find(oddball == 1));
+    m_Y_val = soundPos(find(oddball == 1));
+
+    % TRAIN Y BINARY
+    b_Y_train = bbci_mrk{1, 1}.y(1,:)';
+
+    % VAL Y BINARY
+    b_Y_val = bbci_mrk{1, 2}.y(1,:)';
+
+    % SAVE
+    save(strcat(path, "GoogleColab\AMUSE_", subje(subsub), ...
+        "\m_Y.mat"), 'm_Y_train')
+    save(strcat(path, "GoogleColab\AMUSE_", subje(subsub), ...
+        "\m_Y_val.mat"), 'm_Y_val')
+    save(strcat(path, "GoogleColab\AMUSE_", subje(subsub), ...
+        "\m_Y_sound.mat"), 'm_Y_sound_train')
+    save(strcat(path, "GoogleColab\AMUSE_", subje(subsub), ...
+        "\m_Y_sound_val.mat"), 'm_Y_sound_val')
+    save(strcat(path, "GoogleColab\AMUSE_", subje(subsub), ...
+        "\b_Y.mat", 'b_Y_train')
+    save(strcat(path, "GoogleColab\AMUSE_", subje(subsub), ...
+        "\b_Y_val.mat", 'b_Y_val')
 end
+
