@@ -16,7 +16,7 @@ from tensorflow.keras.callbacks import EarlyStopping
 # CNN function.
 def EEGNet(nb_classes, Chans = 45, Samples = 256, 
              dropoutRate = 0.5, kernLength = 64, F1 = 8, 
-             D = 2, F2 = 16, norm_rate = 0.25, 
+             D = 2, F2 = 16, kernLength2 = 16, norm_rate = 0.25, 
            dropoutType = 'Dropout', activFunct = 'softmax'):
     if dropoutType == 'SpatialDropout2D':
         dropoutType = SpatialDropout2D
@@ -39,7 +39,7 @@ def EEGNet(nb_classes, Chans = 45, Samples = 256,
     block1       = AveragePooling2D((1, 4))(block1)
     block1       = dropoutType(dropoutRate)(block1)
     ###########################################################################
-    block2       = SeparableConv2D(F2, (1, 16),
+    block2       = SeparableConv2D(F2, (1, kernLength2),
                                    use_bias = False, padding = 'same')(block1)
     block2       = BatchNormalization()(block2)
     block2       = Activation('elu')(block2)

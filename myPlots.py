@@ -62,8 +62,10 @@ def fitModel(predType, hist, zoomFlag, path):
     ax1.plot(fittedModel_loss, label='loss')
     ax1.plot(fittedModel_val_loss, label = 'val_loss')
     ax1.legend(loc='lower left', fontsize = 7, handlelength = 2)
-    if zoomFlag == False:
+    if zoomFlag == 0:
         ax1.set_ylim(ymin = 0)
+    elif zoomFlag == 2:
+        ax1.set_ylim(0.15, 0.45)
     ax1.set_xlabel('Epoch')
     ax1.set_ylabel('Loss')
     if predType == 'binary':
@@ -74,8 +76,10 @@ def fitModel(predType, hist, zoomFlag, path):
     ax2.plot(fittedModel_acc, label='accuracy')
     ax2.plot(fittedModel_val_acc, label = 'val_accuracy')
     ax2.legend(loc='upper left', fontsize = 7, handlelength = 2)
-    if zoomFlag == False:
+    if zoomFlag == 0:
         ax2.set_ylim(ymax = 1)
+    elif zoomFlag == 2:
+        ax2.set_ylim(0.8, 0.95)
     ax2.set_xlabel('Epoch')
     ax2.set_ylabel('Accuracy')
     if predType == 'binary':
