@@ -7,3 +7,4 @@
 - myCNN.py: this contains the CNN from https://github.com/vlawhern/arl-eegmodels written by https://github.com/vlawhern and a function to retrive the best epoch of your training, copied from https://github.com/tensorflow/tensorflow/issues/35634 and written by https://github.com/iliaschalkidis.
 - myPlots.py: it contains the function used to plot the loss and accuracy for each epoch of the training (train and validation curve), and the function to plot the confusion matrices nicely.
 
+- myLDA.m and myLDAexample.m: apply the SWLDA to the generated dataset to obtain a classification. Play around with the p_valueIN and the p_valueOUT and check which channels are the most important according to the stepwise method for feature selection.
