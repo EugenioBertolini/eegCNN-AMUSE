@@ -65,10 +65,11 @@ def main():
 
     ################################################################ CHANGE CHANGE
 
-    # selects = ["a0", "n0", "f0", "f1", "f2", "f3", "f4"]
-    # selects = ["f03", "f04", "f05", "f07", "f10", "f15", "f20"]
-    selects = ["f03", "f04", "f05", "f07", "f10", "f15"]
+    # selects = ["a0", "n0", "f0", "f1", "f2", "f3", "f4"] # with dBdB = "8080"
+    # selects = ["f03", "f04", "f05", "f07", "f10", "f15", "f20"] # with dBdB = "3457"
+    
     # selects = ["f2"]
+    selects = ["f03", "f04", "f05", "f07", "f10", "f15"]
 
     # subjects = ["AMUSE_faz", "AMUSE_fce", "AMUSE_fcg", "AMUSE_fcj", "AMUSE_kw"]
     subjects = ["AMUSE_faz", "AMUSE_kw", "AMUSE_fcg"]
@@ -97,7 +98,7 @@ def main():
             #     b_kernLength2 = quant3
             #     m_kernLength2 = quant3
 
-    quant4_label = range(2)
+    quant4_label = range(2) # useful for pseudo-crossvalidation
     for quant4 in quant4_label:
         param_k += 1
 
@@ -281,36 +282,36 @@ def main():
 
                 ############################################################################
                 print('\nLoading datasets...')
-                b_X_train, b_X_test, m_X_train, m_X_test = myFunc.LoadDataset(subject, 
+                b_X_train, b_X_test, m_X_train, m_X_test, b_Y_train, b_Y_test, m_Y_train, m_Y_test = myFunc.LoadDataset(subject, 
                                         select, dBdB, bm_C, b_T, m_T, T_base, T_shift, path0)
 
                 ############################################################################
                 # print('\nLoading dataset b...') ############################################
-                b_path = path0 + subject +'/b'
+                # b_path = path0 + subject +'/b'
                 # mat_contents = sio.loadmat(b_path + select + '_X3D.mat') # ba0_X3D.mat || 4320 samples
                 # b_X_train    = mat_contents['b_X3D_train'] #################################
                 # mat_contents = sio.loadmat(b_path + select + '_X3D_val.mat') # ba0_X3D_val.mat || 5940 samples
                 # b_X_test     = mat_contents['b_X3D_val'] ###################################
-                mat_contents = sio.loadmat(b_path + '_Y.mat') # b_Y.mat || 4320 samples
-                b_Y_train    = mat_contents['b_Y_train'][:, -1]
-                mat_contents = sio.loadmat(b_path + '_Y_val.mat') # b_Y_val.mat || 5940 samples
-                b_Y_test     = mat_contents['b_Y_val'][:, -1]
+                # mat_contents = sio.loadmat(b_path + '_Y.mat') # b_Y.mat || 4320 samples
+                # b_Y_train    = mat_contents['b_Y_train'][:, -1]
+                # mat_contents = sio.loadmat(b_path + '_Y_val.mat') # b_Y_val.mat || 5940 samples
+                # b_Y_test     = mat_contents['b_Y_val'][:, -1]
 
                 ############################################################################
                 # print('Loading dataset m...') ##############################################
-                m_path = path0 + subject +'/m'    
+                # m_path = path0 + subject +'/m'    
                 # mat_contents = sio.loadmat(m_path + select + '_X3D.mat') # ma0_X3D.mat || 720 samples
                 # m_X_train    = mat_contents['m_X3D_train'] #################################
                 # mat_contents = sio.loadmat(m_path + select + '_X3D_val.mat') # ma0_X3D_val.mat || 990 samples
                 # m_X_test     = mat_contents['m_X3D_val'] ###################################
-                mat_contents = sio.loadmat(m_path + '_Y.mat') # m_Y.mat || 720 samples
-                m_Y_train    = mat_contents['m_Y_train'][:, -1]
-                mat_contents = sio.loadmat(m_path + '_Y_val.mat') # m_Y_val.mat || 990 samples
-                m_Y_test     = mat_contents['m_Y_val'][:, -1]
-                mat_contents    = sio.loadmat(m_path + '_Y_sound.mat') # m_Y_sound.mat || 720 samples
-                m_Y_sound_train = mat_contents['m_Y_sound_train'][:, -1]
-                mat_contents    = sio.loadmat(m_path + '_Y_sound_val.mat') # m_Y_sound_val.mat || 990 samples
-                m_Y_sound_test  = mat_contents['m_Y_sound_val'][:, -1]
+                # mat_contents = sio.loadmat(m_path + '_Y.mat') # m_Y.mat || 720 samples
+                # m_Y_train    = mat_contents['m_Y_train'][:, -1]
+                # mat_contents = sio.loadmat(m_path + '_Y_val.mat') # m_Y_val.mat || 990 samples
+                # m_Y_test     = mat_contents['m_Y_val'][:, -1]
+                # mat_contents    = sio.loadmat(m_path + '_Y_sound.mat') # m_Y_sound.mat || 720 samples
+                # m_Y_sound_train = mat_contents['m_Y_sound_train'][:, -1]
+                # mat_contents    = sio.loadmat(m_path + '_Y_sound_val.mat') # m_Y_sound_val.mat || 990 samples
+                # m_Y_sound_test  = mat_contents['m_Y_sound_val'][:, -1]
 
                 b_sample_train  = b_X_train.shape[0]
                 m_sample_train  = m_X_train.shape[0]
@@ -326,8 +327,8 @@ def main():
                 b_Y_test_hot     = np_utils.to_categorical(b_Y_test)
                 m_Y_train_hot    = np_utils.to_categorical(m_Y_train-1)
                 m_Y_test_hot     = np_utils.to_categorical(m_Y_test-1)
-                m_Y_sound_train_hot    = np_utils.to_categorical(m_Y_sound_train-1)
-                m_Y_sound_test_hot     = np_utils.to_categorical(m_Y_sound_test-1)
+                # m_Y_sound_train_hot    = np_utils.to_categorical(m_Y_sound_train-1)
+                # m_Y_sound_test_hot     = np_utils.to_categorical(m_Y_sound_test-1)
                 b_X_train_hot    = b_X_train.reshape(b_sample_train, b_C, b_T, 1)
                 b_X_test_hot     = b_X_test.reshape(b_sample_test, b_C, b_T, 1)
                 m_X_train_hot    = m_X_train.reshape(m_sample_train, m_C, m_T, 1)

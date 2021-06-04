@@ -23,9 +23,24 @@ def SelectOptimizer(optimizer_sel, lr, param1, param2):
                   momentum = param2)
     return opt
 
+def LoadY(mat_cont):
+    b_Y_train = mat_cont['bbci_mrk'][0,0][0,0][1][0,]
+    b_Y_train.transpose()
+    soundPos = mat_cont['bbci_mrk'][0,0][0,0][4][0,0][3][:,0]
+    m_Y_train = soundPos[np.where(b_Y_train == 1)]
+
+    b_Y_test = mat_cont['bbci_mrk'][0,1][0,0][1][0,]
+    b_Y_test.transpose()
+    soundPos = mat_cont['bbci_mrk'][0,1][0,0][4][0,0][3][:,0]
+    m_Y_test = soundPos[np.where(b_Y_test == 1)]
+
+    return b_Y_train, b_Y_test, m_Y_train, m_Y_test
+
 def LoadDataset(sub, filterType, dBdB, bm_C, b_T, m_T, T_base, T_shift, path):
     sub = path + sub[0:6] + 'VP' + sub[6:] + '.mat'
     mat_contents = sio.loadmat(sub)
+    
+    b_Y_train, b_Y_test, m_Y_train, m_Y_test =  LoadY(mat_contents)
 
     data_train = mat_contents['data'][0,0][0,0]
     data_test = mat_contents['data'][0,1][0,0]
@@ -155,4 +170,4 @@ def LoadDataset(sub, filterType, dBdB, bm_C, b_T, m_T, T_base, T_shift, path):
     baseline = np.mean(m_X3D_test_base, axis=2)
     m_X3D_test = m_X3D_test - baseline.reshape((samples_test, bm_C, 1))
 
-    return b_X3D_train, b_X3D_test, m_X3D_train, m_X3D_test
+    return b_X3D_train, b_X3D_test, m_X3D_train, m_X3D_test, b_Y_train, b_Y_test, m_Y_train, m_Y_test
