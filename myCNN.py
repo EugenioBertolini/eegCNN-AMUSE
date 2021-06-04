@@ -27,26 +27,64 @@ def EEGNet(nb_classes, Chans = 45, Samples = 256,
                          'or Dropout, passed as a string.')
     input1   = Input(shape = (Chans, Samples, 1))
     ###########################################################################
-    block1       = Conv2D(F1, (1, kernLength), padding = 'same',
+    conv1        = Conv2D(F1, (1, kernLength), padding = 'same',
                                    input_shape = (Chans, Samples, 1),
                                    use_bias = False)(input1)
-    block1       = BatchNormalization()(block1)
-    block1       = DepthwiseConv2D((Chans, 1), use_bias = False, 
+    batchnorm1   = BatchNormalization()(conv1)
+    conv2        = DepthwiseConv2D((Chans, 1), use_bias = False, 
                                    depth_multiplier = D,
-                                   depthwise_constraint = max_norm(1.))(block1)
-    block1       = BatchNormalization()(block1)
-    block1       = Activation('elu')(block1)
-    block1       = AveragePooling2D((1, 4))(block1)
-    block1       = dropoutType(dropoutRate)(block1)
+                                   depthwise_constraint = max_norm(1.))(batchnorm1)
+    batchnorm2   = BatchNormalization()(conv2)
+    activ2       = Activation('elu')(batchnorm2)
+    avgpool2     = AveragePooling2D((1, 4))(activ2)
+    dropout2     = dropoutType(dropoutRate)(avgpool2)
     ###########################################################################
-    block2       = SeparableConv2D(F2, (1, kernLength2),
-                                   use_bias = False, padding = 'same')(block1)
-    block2       = BatchNormalization()(block2)
-    block2       = Activation('elu')(block2)
-    block2       = AveragePooling2D((1, 8))(block2)
-    block2       = dropoutType(dropoutRate)(block2)
+    conv3        = SeparableConv2D(F2, (1, kernLength2),
+                                   use_bias = False, padding = 'same')(dropout2)
+    batchnorm3   = BatchNormalization()(conv3)
+    activ3       = Activation('elu')(batchnorm3)
+    avgpool3     = AveragePooling2D((1, 8))(activ3)
+    dropout3     = dropoutType(dropoutRate)(avgpool3)
     ###########################################################################
-    flatten      = Flatten(name = 'flatten')(block2)
+    flatten      = Flatten(name = 'flatten')(dropout3)
+    dense        = Dense(nb_classes, name = 'dense', 
+                         kernel_constraint = max_norm(norm_rate))(flatten)
+    softmax      = Activation(activFunct, name = 'softmax')(dense)
+    return Model(inputs=input1, outputs=softmax)
+
+def EEGNet3D(nb_classes, ChansX = 7, ChansY = 6, Samples = 256, 
+             dropoutRate = 0.5, kernLength = 64, F1 = 8, 
+             D = 2, F2 = 16, kernLength2 = 16, norm_rate = 0.25, 
+           dropoutType = 'Dropout', activFunct = 'softmax'):
+    if dropoutType == 'SpatialDropout2D':
+        dropoutType = SpatialDropout2D
+    elif dropoutType == 'Dropout':
+        dropoutType = Dropout
+    else:
+        raise ValueError('dropoutType must be one of SpatialDropout2D '
+                         'or Dropout, passed as a string.')
+    input1   = Input(shape = (ChansX, ChansY, Samples))
+    ###########################################################################
+    conv1        = Conv2D(F1, (1, kernLength), padding = 'same',
+                                   input_shape = (ChansX, ChansY, Samples),
+                                   use_bias = False)(input1)
+    batchnorm1   = BatchNormalization()(conv1)
+    conv2        = DepthwiseConv2D((ChansX, 1), use_bias = False, 
+                                   depth_multiplier = D,
+                                   depthwise_constraint = max_norm(1.))(batchnorm1)
+    batchnorm2   = BatchNormalization()(conv2)
+    activ2       = Activation('elu')(batchnorm2)
+    avgpool2     = AveragePooling2D((1, 4))(activ2)
+    dropout2     = dropoutType(dropoutRate)(avgpool2)
+    ###########################################################################
+    conv3        = SeparableConv2D(F2, (1, kernLength2),
+                                   use_bias = False, padding = 'same')(dropout2)
+    batchnorm3   = BatchNormalization()(conv3)
+    activ3       = Activation('elu')(batchnorm3)
+    avgpool3     = AveragePooling2D((1, 8))(activ3)
+    dropout3     = dropoutType(dropoutRate)(avgpool3)
+    ###########################################################################
+    flatten      = Flatten(name = 'flatten')(dropout3)
     dense        = Dense(nb_classes, name = 'dense', 
                          kernel_constraint = max_norm(norm_rate))(flatten)
     softmax      = Activation(activFunct, name = 'softmax')(dense)
